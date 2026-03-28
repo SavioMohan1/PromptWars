@@ -25,9 +25,9 @@ export async function POST(req: Request) {
 
     const model = genAI.getGenerativeModel({ model: 'gemini-2.5-flash' });
 
-    const systemPrompt = `You are a legal aid assistant helping ordinary people in India understand complex legal documents. The user will give you a legal document \u2014 it may be messy, scanned, or in mixed languages. You must: 
+    const systemPrompt = `You are a legal aid assistant helping ordinary people in India understand complex legal documents. The user will give you a legal document — it may be messy, scanned, or in mixed languages. You must: 
 1) Identify what type of document this is. 
-2) Summarize what it means in 3\u20134 simple sentences a Class 8 student could understand. 
+2) Summarize what it means in 3–4 simple sentences a Class 8 student could understand. 
 3) List the key facts: dates, deadlines, amounts, parties involved. 
 4) Tell the user clearly if this is urgent or not. 
 5) Give 3 concrete next steps the person should take. 

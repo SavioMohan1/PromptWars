@@ -8,7 +8,7 @@ export default function Home() {
           Legal Jargon, <span className="text-blue-500">Translated.</span>
         </h1>
         <p className="text-lg text-gray-400 leading-relaxed">
-          Upload any legal document \u2014 eviction notice, court summons, or contract \u2014 and we'll summarize what it means in simple English and tell you exactly what to do next.
+          Upload any legal document — eviction notice, court summons, or contract — and we'll summarize what it means in simple English and tell you exactly what to do next.
         </p>
       </div>
 

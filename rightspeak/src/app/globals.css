@@ -1,41 +1,102 @@
 @import "tailwindcss";
 
 @theme {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --color-primary: #3b82f6; /* Tailwind blue-500 */
+  --color-background: #0A0A0A;
+  --color-card: #111111;
+  --color-accent: #00FF88;
+  --color-accent-glow: rgba(0, 255, 136, 0.4);
+  /* Extend theme to include custom shadows, animation, and colors */
 }
 
-/*
-  The default border color has changed to `currentColor` in Tailwind CSS v4,
-  so we've added these compatibility styles to make sure everything still
-  looks the same as it did with Tailwind CSS v3.
-
-  If we ever want to remove these styles, we need to add an explicit border
-  color utility to any element that depends on these defaults.
-*/
 @layer base {
   *,
   ::after,
   ::before,
   ::backdrop,
   ::file-selector-button {
-    border-color: var(--color-gray-200, currentColor);
+    border-color: rgba(255, 255, 255, 0.08);
   }
 }
 
 :root {
-  --background: #09090b; /* Zinc 950 */
-  --foreground: #fafafa; /* Zinc 50 */
+  --background: #0A0A0A;
+  --card: #111111;
+  --accent: #00FF88;
 }
 
 body {
-  color: var(--foreground);
-  background: var(--background);
-  font-family: Arial, Helvetica, sans-serif;
+  color: #FAFAFA;
+  background-color: var(--background);
 }
 
-/* Base tailwind applies to HTML but let's make sure our body takes full height nicely */
 html, body {
   min-height: 100vh;
+}
+
+/* Custom Card Layout with Hover Subtle Inner Glow per Plan */
+.card-layer {
+  background-color: var(--card);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow: inset 0 0 0 transparent;
+  transition: box-shadow 0.3s ease;
+  border-radius: 1rem;
+}
+
+.card-layer:hover {
+  box-shadow: inset 0 0 25px rgba(255, 255, 255, 0.03);
+}
+
+/* Custom Gradients and Animations */
+@keyframes animated-gradient {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+.animated-border {
+  position: relative;
+  background: var(--card);
+  border-radius: 1.25rem;
+}
+
+.animated-border::before {
+  content: "";
+  position: absolute;
+  top: -2px; left: -2px; right: -2px; bottom: -2px;
+  background: linear-gradient(90deg, #00FF88, #4facfe, #00FF88, #00f2fe);
+  background-size: 300% 300%;
+  z-index: -1;
+  border-radius: 1.35rem;
+  animation: animated-gradient 4s ease infinite;
+  opacity: 0.6;
+}
+
+.animated-border-dashed {
+  background-image: dashed; /* Basic fallback */
+  border: 2px dashed rgba(255, 255, 255, 0.15);
+  transition: all 0.3s ease;
+}
+
+.animated-border-dashed:hover {
+  border-color: var(--accent);
+  background-color: rgba(0, 255, 136, 0.03);
+}
+
+/* Urgency Glows */
+.pulse-glow-red { animation: glow-red 2.5s infinite alternate; }
+@keyframes glow-red {
+  from { box-shadow: 0 0 10px rgba(239, 68, 68, 0.1); }
+  to { box-shadow: 0 0 25px rgba(239, 68, 68, 0.4); }
+}
+
+.pulse-glow-amber { animation: glow-amber 2.5s infinite alternate; }
+@keyframes glow-amber {
+  from { box-shadow: 0 0 10px rgba(245, 158, 11, 0.1); }
+  to { box-shadow: 0 0 25px rgba(245, 158, 11, 0.4); }
+}
+
+.pulse-glow-green { animation: glow-green 2.5s infinite alternate; }
+@keyframes glow-green {
+  from { box-shadow: 0 0 10px rgba(0, 255, 136, 0.1); }
+  to { box-shadow: 0 0 25px rgba(0, 255, 136, 0.4); }
 }
