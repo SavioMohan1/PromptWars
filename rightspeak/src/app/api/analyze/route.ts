@@ -23,7 +23,7 @@ export async function POST(req: Request) {
       );
     }
 
-    const model = genAI.getGenerativeModel({ model: 'gemini-2.0-flash' });
+    const model = genAI.getGenerativeModel({ model: 'gemini-1.5-flash' });
 
     const systemPrompt = `You are a legal aid assistant helping ordinary people in India understand complex legal documents. The user will give you a legal document \u2014 it may be messy, scanned, or in mixed languages. You must: 
 1) Identify what type of document this is. 
