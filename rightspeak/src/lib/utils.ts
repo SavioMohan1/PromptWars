@@ -67,12 +67,12 @@ export function parseGeminiResult(rawText: string): ParsedDocumentResult {
     return content;
   };
 
-  // Find Urgency
+  // Find Urgency — order matters: check 'not urgent'/'low' BEFORE 'urgent'/'high'
   const urgencyContent = extractSection(/urgency/i, /(next steps|rights|summary|key facts)/i) || 
                          rawText.match(/urgency.*?(high|medium|low|urgent|not urgent)/i)?.[0] || '';
-  if (/urgent|high|immediate/i.test(urgencyContent)) result.urgency = 'high';
-  else if (/moderate|medium/i.test(urgencyContent)) result.urgency = 'medium';
-  else if (/low|not urgent|safe/i.test(urgencyContent)) result.urgency = 'low';
+  if (/\bnot urgent\b|\blow\b|\bsafe\b/i.test(urgencyContent)) result.urgency = 'low';
+  else if (/\bmoderate\b|\bmedium\b/i.test(urgencyContent)) result.urgency = 'medium';
+  else if (/\burgent\b|\bhigh\b|\bimmediate\b/i.test(urgencyContent)) result.urgency = 'high';
 
   // Find Summary
   result.summary = extractSection(/summary|what it means/i, /(key facts|urgency|next steps|rights|#)/i) || "No summary provided.";

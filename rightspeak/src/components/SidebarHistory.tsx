@@ -48,9 +48,12 @@ export default function SidebarHistory({ onSelect }: SidebarHistoryProps) {
       {/* Floating Button */}
       <button 
         onClick={() => setIsOpen(true)}
+        aria-label="Open document history"
+        aria-expanded={isOpen}
+        aria-controls="sidebar-history"
         className="fixed top-24 left-0 bg-[#111111] border border-white/10 border-l-0 p-3 rounded-r-2xl shadow-lg hover:w-32 transition-all flex items-center group overflow-hidden z-40"
       >
-        <History className="w-5 h-5 text-gray-400 group-hover:text-[#00FF88]" />
+        <History className="w-5 h-5 text-gray-400 group-hover:text-[#00FF88]" aria-hidden="true" />
         <span className="ml-2 text-sm text-gray-300 font-medium whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity">
           Recent Scans
         </span>
@@ -72,15 +75,19 @@ export default function SidebarHistory({ onSelect }: SidebarHistoryProps) {
               animate={{ x: 0 }}
               exit={{ x: '-100%' }}
               transition={{ type: 'spring', damping: 25, stiffness: 200 }}
+              id="sidebar-history"
+              role="dialog"
+              aria-modal="true"
+              aria-label="Document history panel"
               className="fixed top-0 left-0 h-full w-80 bg-[#111111] border-r border-white/10 shadow-2xl z-50 flex flex-col pt-[var(--header-height,60px)]"
             >
               <div className="p-6 border-b border-white/5 flex items-center justify-between mt-4">
-                <h3 className="text-xl font-bold flex items-center text-white">
-                  <History className="w-5 h-5 mr-2 text-[#00FF88]" />
+                <h2 className="text-xl font-bold flex items-center text-white">
+                  <History className="w-5 h-5 mr-2 text-[#00FF88]" aria-hidden="true" />
                   Document History
-                </h3>
-                <button onClick={() => setIsOpen(false)} className="text-gray-500 hover:text-white transition">
-                  <X className="w-6 h-6" />
+                </h2>
+                <button onClick={() => setIsOpen(false)} aria-label="Close document history" className="text-gray-500 hover:text-white transition">
+                  <X className="w-6 h-6" aria-hidden="true" />
                 </button>
               </div>
 

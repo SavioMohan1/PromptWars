@@ -273,8 +273,8 @@ export default function DocumentAnalyzer() {
                 <div className="flex justify-between items-end mb-6">
                   <h2 className="text-3xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-white to-gray-400">Scan Document</h2>
                   {file && (
-                     <button onClick={clearSelection} className="text-sm text-red-400 flex items-center hover:bg-red-400/10 px-3 py-1.5 rounded-lg transition-colors">
-                       <X className="w-4 h-4 mr-1" /> Clear
+                     <button onClick={clearSelection} aria-label="Clear selected file" className="text-sm text-red-400 flex items-center hover:bg-red-400/10 px-3 py-1.5 rounded-lg transition-colors">
+                       <X className="w-4 h-4 mr-1" aria-hidden="true" /> Clear
                      </button>
                   )}
                 </div>
@@ -282,17 +282,21 @@ export default function DocumentAnalyzer() {
                 <div className="flex flex-col md:flex-row gap-6">
                   {/* File Upload / Preview Box */}
                   <div 
+                    role="button"
+                    tabIndex={0}
+                    aria-label={file ? `Selected file: ${file.name}` : 'Upload a PDF or image document'}
+                    onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); !file && fileInputRef.current?.click(); } }}
                     className={cn(
                       "flex-1 relative animated-border-dashed rounded-2xl flex flex-col items-center justify-center p-6 min-h-[220px] cursor-pointer group",
                       isHovering && "border-[#00FF88] bg-[#00FF88]/5",
-                      file && "border-green-500/30 bg-green-500/10 border-solid animated-border-dashed-none" // custom class tweak
+                      file && "border-green-500/30 bg-green-500/10 border-solid animated-border-dashed-none"
                     )}
                     onDragOver={handleDragOver}
                     onDragLeave={handleDragLeave}
                     onDrop={handleDrop}
                     onClick={() => !file && fileInputRef.current?.click()}
                   >
-                    <input type="file" className="hidden" ref={fileInputRef} onChange={handleFileChange} accept="application/pdf,image/*" />
+                    <input type="file" className="hidden" ref={fileInputRef} onChange={handleFileChange} accept="application/pdf,image/*" aria-label="Upload legal document file" id="file-upload" />
                     
                     {file ? (
                       <div className="absolute inset-0 p-4 flex flex-col items-center justify-center animate-in fade-in zoom-in duration-300">
@@ -315,7 +319,7 @@ export default function DocumentAnalyzer() {
                     ) : (
                       <>
                         <div className="w-16 h-16 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center mb-4 group-hover:bg-[#00FF88]/10 group-hover:border-[#00FF88]/50 transition-colors">
-                          <Upload className={cn("w-8 h-8 transition-colors", isHovering ? "text-[#00FF88]" : "text-gray-400")} />
+                          <Upload className={cn("w-8 h-8 transition-colors", isHovering ? "text-[#00FF88]" : "text-gray-400")} aria-hidden="true" />
                         </div>
                         <p className="text-white font-medium text-lg">
                           {isHovering ? "Drop it here!" : "Drag & drop a file"}
@@ -329,6 +333,8 @@ export default function DocumentAnalyzer() {
                   <div className="flex-1 flex flex-col">
                     <div className="relative flex-grow">
                       <textarea
+                        id="legal-text-input"
+                        aria-label="Paste legal document text"
                         className={cn(
                           "w-full h-full min-h-[220px] bg-black/40 border border-white/10 rounded-2xl p-5 text-gray-200 placeholder-gray-600 focus:ring-2 focus:ring-[#00FF88] focus:border-transparent resize-none transition-all",
                           file && "opacity-30 cursor-not-allowed"
@@ -348,14 +354,16 @@ export default function DocumentAnalyzer() {
                 </div>
 
                 <div className="mt-8 flex flex-col sm:flex-row items-center justify-between gap-4">
-                  <button onClick={loadSample} className="text-sm text-gray-400 hover:text-[#00FF88] flex items-center font-medium transition-colors w-full sm:w-auto justify-center">
-                    <FileSearch className="w-4 h-4 mr-2" /> Load sample document
+                  <button onClick={loadSample} aria-label="Load a sample eviction notice document" className="text-sm text-gray-400 hover:text-[#00FF88] flex items-center font-medium transition-colors w-full sm:w-auto justify-center">
+                    <FileSearch className="w-4 h-4 mr-2" aria-hidden="true" /> Load sample document
                   </button>
                   
                   {/* Desktop Analyze Button */}
                   <button 
                     onClick={() => handleAnalyze()}
                     disabled={isLoading || (!file && !textInput.trim())}
+                    aria-label="Analyze document with Gemini AI"
+                    aria-busy={isLoading}
                     className="hidden md:flex relative overflow-hidden px-8 py-3.5 bg-[#FAFAFA] text-black disabled:bg-gray-800 disabled:text-gray-500 hover:bg-[#00FF88] rounded-xl font-bold shadow-lg shadow-white/10 hover:shadow-[#00FF88]/20 transition-all items-center"
                   >
                     {isLoading ? (
@@ -389,35 +397,36 @@ export default function DocumentAnalyzer() {
                    <motion.div variants={itemVars} className="flex flex-col sm:flex-row items-center justify-between gap-4 py-2 border-b border-white/10 pb-4">
                       <div className="flex items-center space-x-3">
                          <div className="p-2 bg-[#111111] border border-white/10 rounded-lg">
-                           <Languages className="w-4 h-4 text-gray-400" />
+                           <Languages className="w-4 h-4 text-gray-400" aria-hidden="true" />
                          </div>
                          <select 
                            value={targetLang}
                            onChange={(e) => handleAnalyze(e.target.value)}
+                           aria-label="Select output language for analysis"
                            className="bg-transparent text-sm font-medium text-white border-none focus:ring-0 cursor-pointer outline-none"
                            disabled={isLoading}
                          >
                            {LANGUAGES.map(l => <option key={l.code} value={l.code} className="bg-[#111111]">{l.name}</option>)}
                          </select>
-                         {isLoading && <Loader2 className="w-4 h-4 text-[#00FF88] animate-spin" />}
+                         {isLoading && <Loader2 className="w-4 h-4 text-[#00FF88] animate-spin" aria-hidden="true" />}
                       </div>
                       
                       <div className="flex items-center gap-3 w-full sm:w-auto overflow-x-auto pb-2 sm:pb-0">
-                        <button onClick={generatePDF} disabled={isGeneratingPdf} className="flex-1 sm:flex-none text-xs flex items-center justify-center font-medium bg-[#111111] disabled:opacity-50 hover:bg-white/10 border border-white/10 px-4 py-2 rounded-lg transition-colors whitespace-nowrap">
-                          {isGeneratingPdf ? <Loader2 className="w-3.5 h-3.5 mr-2 animate-spin" /> : <Download className="w-3.5 h-3.5 mr-2" />} 
+                        <button onClick={generatePDF} disabled={isGeneratingPdf} aria-label="Download analysis as PDF" className="flex-1 sm:flex-none text-xs flex items-center justify-center font-medium bg-[#111111] disabled:opacity-50 hover:bg-white/10 border border-white/10 px-4 py-2 rounded-lg transition-colors whitespace-nowrap">
+                          {isGeneratingPdf ? <Loader2 className="w-3.5 h-3.5 mr-2 animate-spin" aria-hidden="true" /> : <Download className="w-3.5 h-3.5 mr-2" aria-hidden="true" />} 
                           {isGeneratingPdf ? 'Saving...' : 'PDF'}
                         </button>
-                        <button onClick={shareWhatsApp} className="flex-1 sm:flex-none text-xs flex items-center justify-center font-medium bg-green-600/20 text-green-400 hover:bg-green-600/30 border border-green-500/30 px-4 py-2 rounded-lg transition-colors whitespace-nowrap">
-                          <Share2 className="w-3.5 h-3.5 mr-2" /> WhatsApp
+                        <button onClick={shareWhatsApp} aria-label="Share analysis summary via WhatsApp" className="flex-1 sm:flex-none text-xs flex items-center justify-center font-medium bg-green-600/20 text-green-400 hover:bg-green-600/30 border border-green-500/30 px-4 py-2 rounded-lg transition-colors whitespace-nowrap">
+                          <Share2 className="w-3.5 h-3.5 mr-2" aria-hidden="true" /> WhatsApp
                         </button>
-                        <button onClick={clearSelection} className="flex-1 sm:flex-none text-xs flex items-center justify-center font-medium bg-red-500/10 text-red-400 hover:bg-red-500/20 border border-red-500/30 px-4 py-2 rounded-lg transition-colors whitespace-nowrap">
+                        <button onClick={clearSelection} aria-label="Start a new document analysis" className="flex-1 sm:flex-none text-xs flex items-center justify-center font-medium bg-red-500/10 text-red-400 hover:bg-red-500/20 border border-red-500/30 px-4 py-2 rounded-lg transition-colors whitespace-nowrap">
                           New File
                         </button>
                       </div>
                    </motion.div>
 
                    {/* WRAPPER FOR PDF EXPORT */}
-                   <div ref={resultsRef} className="space-y-6 bg-[#0A0A0A] p-1">
+                   <section ref={resultsRef} className="space-y-6 bg-[#0A0A0A] p-1" aria-label="Document Analysis Results">
                       {/* HEADER ROW */}
                       <motion.div variants={itemVars} className="flex flex-col md:flex-row gap-4 items-stretch">
                         <div className="flex-1 card-layer p-6 pb-5 border-l-4 border-l-[#00FF88]">
@@ -440,7 +449,7 @@ export default function DocumentAnalyzer() {
                              "w-10 h-10 mb-2",
                              parsedResult.urgency === 'high' ? 'text-red-500' :
                              parsedResult.urgency === 'medium' ? 'text-amber-500' : 'text-green-500'
-                           )}/>
+                           )} aria-hidden="true"/>
                            <span className="text-xs text-gray-400 font-bold uppercase tracking-widest">Urgency</span>
                            <h2 className={cn(
                              "text-xl font-black uppercase mt-1",
@@ -462,6 +471,7 @@ export default function DocumentAnalyzer() {
                         </div>
                         <button 
                           onClick={() => { navigator.clipboard.writeText(parsedResult.summary); }}
+                          aria-label="Copy plain English summary to clipboard"
                           className="absolute top-6 right-6 text-xs text-gray-500 hover:text-white border border-white/10 px-3 py-1.5 rounded-lg bg-black/50"
                         >
                           Copy
@@ -535,9 +545,9 @@ export default function DocumentAnalyzer() {
                            </motion.div>
                            )}
                          </div>
-                      </div>
-                   </div>
-                </div>
+                       </div>
+                   </section>
+                 </div>
               )}
             </motion.div>
           )}
@@ -550,9 +560,11 @@ export default function DocumentAnalyzer() {
         <button 
           onClick={() => handleAnalyze()}
           disabled={isLoading || (!file && !textInput.trim())}
+          aria-label="Analyze document with Gemini AI"
+          aria-busy={isLoading}
           className="w-full relative overflow-hidden px-8 py-4 bg-[#00FF88] text-black disabled:bg-gray-800 disabled:text-gray-500 hover:bg-[#00ffa2] rounded-2xl font-black shadow-[0_10px_40px_rgba(0,255,136,0.3)] disabled:shadow-none transition-all flex items-center justify-center text-lg"
         >
-          {isLoading ? <Loader2 className="animate-spin h-6 w-6" /> : "Analyze Document"}
+          {isLoading ? <Loader2 className="animate-spin h-6 w-6" aria-hidden="true" /> : "Analyze Document"}
         </button>
       </div>
       )}
